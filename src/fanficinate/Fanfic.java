@@ -1,5 +1,7 @@
 package fanficinate;
 
+import java.awt.BorderLayout;
+import java.awt.TextArea;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -49,6 +51,19 @@ public class Fanfic {
 		}
 		
 		return str.toString();
+	}
+	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
+	public void showResult() {
+		JFrame resultWindow = new JFrame("Processed Fanfic");
+		resultWindow.setVisible(true);
+		resultWindow.setBounds(mainJFrame.getX() + 100, mainJFrame.getY() + 100, 599, 300);
+		TextArea resultTextArea = new TextArea(fanfic);
+		resultTextArea.setEditable(false);
+		resultTextArea.setBounds(0, 0, 599, 300);
+		resultWindow.getContentPane().add(resultTextArea, BorderLayout.NORTH);
 	}
 	
 	// Swaps two of the letters in the given word
