@@ -1,4 +1,6 @@
 package fanficinate;
+
+// Imports
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Image;
@@ -26,6 +28,7 @@ public class GUIStart {
 
 	private JFrame frmFanficinatorBeta;
 	private JTextField textField;
+	// How many passes of fanficination to do on the fanfic
 	public int complexity;
 
 	/**
@@ -60,9 +63,11 @@ public class GUIStart {
 		frmFanficinatorBeta.setBounds(100, 100, 450, 300);
 		frmFanficinatorBeta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		// Set the custom icon
 		Image programIcon = Toolkit.getDefaultToolkit().getImage("res/fanfiction_logo.png");
 		frmFanficinatorBeta.setIconImage(programIcon);
 		
+		// Menu bar
 		JMenuBar menuBar = new JMenuBar();
 		frmFanficinatorBeta.setJMenuBar(menuBar);
 		
@@ -81,6 +86,7 @@ public class GUIStart {
 		JMenu mnOptions = new JMenu("Options");
 		menuBar.add(mnOptions);
 		
+		// Preferences JFrame
 		JMenuItem mntmPreferences = new JMenuItem("Preferences");
 		mntmPreferences.addMouseListener(new MouseAdapter() {
 			@Override
@@ -98,6 +104,7 @@ public class GUIStart {
 		frmFanficinatorBeta.getContentPane().add(panel, BorderLayout.NORTH);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
+		// Fanficinate from file
 		JLabel lblPleaseEnterYour = new JLabel("Please enter your fanfic below or enter the file URL here:");
 		lblPleaseEnterYour.setVerticalAlignment(SwingConstants.TOP);
 		panel.add(lblPleaseEnterYour);
@@ -142,6 +149,7 @@ public class GUIStart {
 		});
 		panel.add(btnGo);
 		
+		// Fanficinate from direct input
 		final TextArea textArea = new TextArea();
 		frmFanficinatorBeta.getContentPane().add(textArea, BorderLayout.WEST);
 		
