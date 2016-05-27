@@ -166,15 +166,8 @@ public class GUIStart {
 				Fanfic fanficObject = new Fanfic();
 				fanficObject.fanfic = words;
 				fanficObject.mainJFrame = frmFanficinatorBeta;
-				String newFanfic = fanficObject.Fanficinate();
-				
-				JFrame resultWindow = new JFrame("Processed Fanfic");
-				resultWindow.setVisible(true);
-				resultWindow.setBounds(frmFanficinatorBeta.getX() + 100, frmFanficinatorBeta.getY() + 100, 300, 200);
-				TextArea resultTextArea = new TextArea(newFanfic);
-				resultTextArea.setEditable(false);
-				resultTextArea.setBounds(0, 0, 300, 300);
-				resultWindow.getContentPane().add(resultTextArea, BorderLayout.NORTH);
+				fanficObject.Fanficinate();
+				fanficObject.showResult();
 			}
 		});
 		
@@ -209,15 +202,7 @@ public class GUIStart {
 				Fanfic fanficObject = new Fanfic();
 				fanficObject.mainJFrame = frmFanficinatorBeta;
 				fanficObject.fanfic = fanfic;
-				String newFanfic = fanficObject.Fanficinate();
-				
-				JFrame resultWindow = new JFrame("Processed Fanfic");
-				resultWindow.setVisible(true);
-				resultWindow.setBounds(frmFanficinatorBeta.getX() + 100, frmFanficinatorBeta.getY() + 100, 300, 200);
-				TextArea resultTextArea = new TextArea(newFanfic);
-				resultTextArea.setEditable(false);
-				resultTextArea.setBounds(0, 0, 300, 300);
-				resultWindow.getContentPane().add(resultTextArea, BorderLayout.NORTH);
+				fanficObject.showResult();
 			}
 		});
 		frmFanficinatorBeta.getContentPane().add(btnFanficinate, BorderLayout.SOUTH);
