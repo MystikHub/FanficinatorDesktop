@@ -2,10 +2,24 @@ package fanficinate;
 
 import java.awt.BorderLayout;
 import java.awt.TextArea;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.net.URISyntaxException;
 import java.util.Random;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Fanfic {
 	public String fanfic;
@@ -14,9 +28,10 @@ public class Fanfic {
 	public JFrame mainJFrame;
 	
 	private Random rand = new Random();
+	private JTextField filePathField;
 	
 	// Goes through the given fanfic and "improves" it
-	public String Fanficinate() {
+	public void Fanficinate() {
 		// Split the fanfic by words
 		String[] words = fanfic.split("\\s+");
 		// Make a duplicate of the array to store the new fanfic
@@ -50,7 +65,7 @@ public class Fanfic {
 		    str.append(s);
 		}
 		
-		return str.toString();
+		fanfic = str.toString();
 	}
 	
 	/**
@@ -59,11 +74,66 @@ public class Fanfic {
 	public void showResult() {
 		JFrame resultWindow = new JFrame("Processed Fanfic");
 		resultWindow.setVisible(true);
-		resultWindow.setBounds(mainJFrame.getX() + 100, mainJFrame.getY() + 100, 599, 300);
+		resultWindow.setBounds(mainJFrame.getX() + 100, mainJFrame.getY() + 100, 600, 415);
 		TextArea resultTextArea = new TextArea(fanfic);
 		resultTextArea.setEditable(false);
-		resultTextArea.setBounds(0, 0, 599, 300);
-		resultWindow.getContentPane().add(resultTextArea, BorderLayout.NORTH);
+		resultTextArea.setBounds(0, 0, 300, 300);
+		resultWindow.getContentPane().add(resultTextArea, BorderLayout.CENTER);
+		
+		JPanel panel = new JPanel();
+		resultWindow.getContentPane().add(panel, BorderLayout.SOUTH);
+		
+		JLabel lblSaveLocation = new JLabel("Save Location");
+		panel.add(lblSaveLocation);
+		
+		filePathField = new JTextField();
+		filePathField.setHorizontalAlignment(SwingConstants.LEFT);
+		panel.add(filePathField);
+		filePathField.setColumns(40);
+		
+		JButton btnChooseLocation = new JButton("Choose Location");
+		btnChooseLocation.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				JFileChooser chooser = new JFileChooser();
+				try {
+					chooser.setCurrentDirectory(new File(GUIStart.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()));
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Document (*.txt)", ".txt");
+				chooser.setFileFilter(filter);
+
+			    int returnVal = chooser.showSaveDialog(mainJFrame);
+			    if(returnVal == JFileChooser.APPROVE_OPTION) {
+			    	String filePath = chooser.getSelectedFile().getPath();
+			    	filePathField.setText(filePath);
+			    }
+			}
+		});
+		panel.add(btnChooseLocation);
+		
+		JButton btnSave = new JButton("Save");
+		btnSave.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				try {
+					// Create file
+					FileWriter fstream = new FileWriter(filePathField.getText());
+			        BufferedWriter out = new BufferedWriter(fstream);
+			        out.write(fanfic);
+			        //Close the output stream
+			        out.close();
+
+					JOptionPane.showMessageDialog(mainJFrame, "File successfully created!");
+					resultWindow.dispatchEvent(new WindowEvent(resultWindow, WindowEvent.WINDOW_CLOSING));
+			    } catch (Exception e) { //Catch exception if any
+			    	System.err.println("Error: " + e.getMessage());
+					JOptionPane.showMessageDialog(mainJFrame, "Could not write to " + filePathField.getText() + " (error code FSR_FILE_WRITE_ERROR)");
+			    }
+			}
+		});
+		panel.add(btnSave);
 	}
 	
 	// Swaps two of the letters in the given word
