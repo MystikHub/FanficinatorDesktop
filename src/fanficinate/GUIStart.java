@@ -1,35 +1,32 @@
 package fanficinate;
-
-// Imports
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.Image;
-import java.awt.TextArea;
-import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Scanner;
+
+import javax.swing.JFrame;
+import java.awt.BorderLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import java.awt.TextArea;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 
 public class GUIStart {
 
 	private JFrame frmFanficinatorBeta;
-	private JTextField textField;
-	// How many passes of fanficination to do on the fanfic
+	fileExplorer fileExplorer = new fileExplorer();
+	File path = new File("New");
 	public int complexity;
+	final TextArea textArea = new TextArea();
+	Fanfic fanficObject = new Fanfic();
 
 	/**
 	 * Launch the application.
@@ -63,11 +60,6 @@ public class GUIStart {
 		frmFanficinatorBeta.setBounds(100, 100, 450, 300);
 		frmFanficinatorBeta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		// Set the custom icon
-		Image programIcon = Toolkit.getDefaultToolkit().getImage("res/fanfiction_logo.png");
-		frmFanficinatorBeta.setIconImage(programIcon);
-		
-		// Menu bar
 		JMenuBar menuBar = new JMenuBar();
 		frmFanficinatorBeta.setJMenuBar(menuBar);
 		
@@ -78,6 +70,11 @@ public class GUIStart {
 		mnFile.add(mntmNewFanficination);
 		
 		JMenuItem mntmOpen = new JMenuItem("Open...");
+		mntmOpen.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+			readFile();
+		}});
+		
 		mnFile.add(mntmOpen);
 		
 		JMenuItem mntmQuit = new JMenuItem("Quit");
@@ -86,8 +83,8 @@ public class GUIStart {
 		JMenu mnOptions = new JMenu("Options");
 		menuBar.add(mnOptions);
 		
-		// Preferences JFrame
 		JMenuItem mntmPreferences = new JMenuItem("Preferences");
+		
 		mntmPreferences.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -103,75 +100,47 @@ public class GUIStart {
 		JPanel panel = new JPanel();
 		frmFanficinatorBeta.getContentPane().add(panel, BorderLayout.NORTH);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		
-		// Fanficinate from file
-		JLabel lblPleaseEnterYour = new JLabel("Please enter your fanfic below or enter the file URL here:");
-		lblPleaseEnterYour.setVerticalAlignment(SwingConstants.TOP);
-		panel.add(lblPleaseEnterYour);
-		
-		textField = new JTextField();
-		textField.setToolTipText("File URL");
-		panel.add(textField);
-		textField.setColumns(10);
-		
-		JButton btnGo = new JButton("Go!");
-		btnGo.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				Path filePath = Paths.get(textField.getText());
-				Scanner scanner = null;
-				try {
-					scanner = new Scanner(filePath);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-				String words = new String();
-				while (scanner.hasNext()) {
-				    if (scanner.hasNextLine()) {
-				        words += scanner.nextLine();
-				    } else {
-				        scanner.next();
-				    }
-				}
-				Fanfic fanficObject = new Fanfic();
-				fanficObject.fanfic = words;
-				fanficObject.mainJFrame = frmFanficinatorBeta;
-				String newFanfic = fanficObject.Fanficinate();
-				
-				JFrame resultWindow = new JFrame("Processed Fanfic");
-				resultWindow.setVisible(true);
-				resultWindow.setBounds(frmFanficinatorBeta.getX() + 100, frmFanficinatorBeta.getY() + 100, 300, 200);
-				TextArea resultTextArea = new TextArea(newFanfic);
-				resultTextArea.setEditable(false);
-				resultTextArea.setBounds(0, 0, 300, 300);
-				resultWindow.getContentPane().add(resultTextArea, BorderLayout.NORTH);
-			}
-		});
-		panel.add(btnGo);
-		
-		// Fanficinate from direct input
-		final TextArea textArea = new TextArea();
+			
 		frmFanficinatorBeta.getContentPane().add(textArea, BorderLayout.WEST);
-		
 		JButton btnFanficinate = new JButton("Fanficinate");
 		btnFanficinate.addMouseListener(new MouseAdapter() {
-			@Override
 			public void mouseReleased(MouseEvent e) {
 				String fanfic = textArea.getText();
-				Fanfic fanficObject = new Fanfic();
-				fanficObject.mainJFrame = frmFanficinatorBeta;
 				fanficObject.fanfic = fanfic;
 				String newFanfic = fanficObject.Fanficinate();
-				
-				JFrame resultWindow = new JFrame("Processed Fanfic");
-				resultWindow.setVisible(true);
-				resultWindow.setBounds(frmFanficinatorBeta.getX() + 100, frmFanficinatorBeta.getY() + 100, 300, 200);
-				TextArea resultTextArea = new TextArea(newFanfic);
-				resultTextArea.setEditable(false);
-				resultTextArea.setBounds(0, 0, 300, 300);
-				resultWindow.getContentPane().add(resultTextArea, BorderLayout.NORTH);
+				displayFanfic(newFanfic);
 			}
 		});
-		frmFanficinatorBeta.getContentPane().add(btnFanficinate, BorderLayout.SOUTH);
+		frmFanficinatorBeta.getContentPane().add(btnFanficinate, BorderLayout.SOUTH);	
+	}
+	
+	
+	private void displayFanfic(String fic) {
+		JFrame resultWindow = new JFrame("Processed Fanfic");
+		resultWindow.setVisible(true);
+		resultWindow.setBounds(frmFanficinatorBeta.getX() + 100, frmFanficinatorBeta.getY() + 100, 300, 200);
+		TextArea resultTextArea = new TextArea(fic);
+		resultTextArea.setEditable(false);
+		resultTextArea.setBounds(0, 0, 300, 300);
+		resultWindow.getContentPane().add(resultTextArea, BorderLayout.NORTH);
+	}
+	
+	
+	private void readFile() {	
+		String filePath = (fileExplorer.makeChooser()).getAbsolutePath();
+		StringBuilder str = new StringBuilder();
+		String line;
+		try {
+			BufferedReader ois = new BufferedReader(new FileReader(filePath));
+			while ((line = ois.readLine()) != null) {
+				str.append(line);
+			}
+			ois.close();
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+		fanficObject.fanfic = str.toString();
+		String newFanfic = fanficObject.Fanficinate();
+		displayFanfic(newFanfic);
 	}
 }
