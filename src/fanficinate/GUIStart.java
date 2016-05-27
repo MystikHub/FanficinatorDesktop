@@ -2,6 +2,7 @@ package fanficinate;
 
 // Imports
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.TextArea;
@@ -10,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
@@ -29,10 +31,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import java.awt.Button;
-import java.awt.Desktop;
-import java.awt.Dimension;
 
 public class GUIStart {
 
@@ -69,7 +67,7 @@ public class GUIStart {
 	 */
 	private void initialize() {
 		frmFanficinatorBeta = new JFrame();
-		frmFanficinatorBeta.setTitle("Fanficinator 0.0.4 beta");
+		frmFanficinatorBeta.setTitle("Fanficinator 0.1.0 beta");
 		frmFanficinatorBeta.setBounds(100, 100, 614, 353);
 		frmFanficinatorBeta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -177,8 +175,15 @@ public class GUIStart {
 			public void mouseReleased(MouseEvent arg0) {
 				JFileChooser chooser = new JFileChooser();
 			    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-			        "Text files", "txt");
+			        "Text Documents (*.txt)", "txt");
 			    chooser.setFileFilter(filter);
+			    try {
+					chooser.setCurrentDirectory(new File(GUIStart.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()));
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			    
 			    int returnVal = chooser.showOpenDialog(chooser);
 			    if(returnVal == JFileChooser.APPROVE_OPTION) {
 			    	String filePath = chooser.getSelectedFile().getPath();
@@ -202,6 +207,7 @@ public class GUIStart {
 				Fanfic fanficObject = new Fanfic();
 				fanficObject.mainJFrame = frmFanficinatorBeta;
 				fanficObject.fanfic = fanfic;
+				fanficObject.Fanficinate();
 				fanficObject.showResult();
 			}
 		});
