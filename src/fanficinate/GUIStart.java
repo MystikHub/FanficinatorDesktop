@@ -1,16 +1,9 @@
 package fanficinate;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import java.awt.BorderLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
+import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.TextArea;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -19,7 +12,15 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class GUIStart {
 
@@ -58,6 +59,9 @@ public class GUIStart {
 		frmFanficinatorBeta.setTitle("Fanficinator 0.0.3 beta");
 		frmFanficinatorBeta.setBounds(100, 100, 450, 300);
 		frmFanficinatorBeta.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		Image programIcon = Toolkit.getDefaultToolkit().getImage("res/fanfiction_logo.png");
+		frmFanficinatorBeta.setIconImage(programIcon);
 		
 		JMenuBar menuBar = new JMenuBar();
 		frmFanficinatorBeta.setJMenuBar(menuBar);
@@ -124,6 +128,7 @@ public class GUIStart {
 				}
 				Fanfic fanficObject = new Fanfic();
 				fanficObject.fanfic = words;
+				fanficObject.mainJFrame = frmFanficinatorBeta;
 				String newFanfic = fanficObject.Fanficinate();
 				
 				JFrame resultWindow = new JFrame("Processed Fanfic");
@@ -146,6 +151,7 @@ public class GUIStart {
 			public void mouseReleased(MouseEvent e) {
 				String fanfic = textArea.getText();
 				Fanfic fanficObject = new Fanfic();
+				fanficObject.mainJFrame = frmFanficinatorBeta;
 				fanficObject.fanfic = fanfic;
 				String newFanfic = fanficObject.Fanficinate();
 				
